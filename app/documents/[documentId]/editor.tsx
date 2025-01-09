@@ -11,9 +11,12 @@ import TableRow from '@tiptap/extension-table-row';
 import Underline from '@tiptap/extension-underline';
 import Strikethrough from '@tiptap/extension-strike';
 import Image from '@tiptap/extension-image';
+import { Color } from '@tiptap/extension-color';
+import Highlight from '@tiptap/extension-highlight';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from "@/store/use-editor-store";
-
+import Heading from '@tiptap/extension-heading';
+import { TextStyle } from '@tiptap/extension-text-style';
 export const Editor = () => {
 
 
@@ -62,6 +65,12 @@ export const Editor = () => {
       Image,
       ImageResize,
       Strikethrough,
+      Heading,
+      Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextStyle,
     ],
     content: `
         <table>
