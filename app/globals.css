@@ -243,6 +243,15 @@ body {
       outline: 3px solid var(--primary);
     }
   }
+  a {
+    color: blue;
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(1, 1, 190);
+      text-decoration: underline;
+    }
+  }
 }
 
  

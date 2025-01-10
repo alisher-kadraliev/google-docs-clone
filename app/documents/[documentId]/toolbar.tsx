@@ -2,15 +2,126 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/store/use-editor-store";
-import { BoldIcon, ChevronDownIcon, HighlighterIcon, ItalicIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SpellCheckIcon, StrikethroughIcon, UnderlineIcon, Undo2Icon } from "lucide-react";
-import { type ColorResult, SketchPicker } from "react-color"
+import { BoldIcon, ChevronDownIcon, HighlighterIcon, ImageIcon, ItalicIcon, LinkIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, StrikethroughIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
+import { type ColorResult, SketchPicker } from "react-color";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuTrigger
+    DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import {
+    Dialog,
+    DialogContent, DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { Level } from "@tiptap/extension-heading";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+interface ToolbarButtonProps {
+    onClick?: () => void;
+    isActive?: boolean;
+    icon: LucideIcon;
+}
 
+const ImageButton = () => {
+    const { editor } = useEditorStore();
+
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [imageUrl, setImageUrl] = useState("");
+
+    const onChange = (src: string) => {
+        editor?.chain().focus().setImage({ src }).run();
+    }
+
+    const onUpload = () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                setImageUrl(url);
+                setIsDialogOpen(false);
+                onChange(url);
+            }
+        }
+        input.click();
+    }
+
+    const handleImageUrlSubmit = () => {
+        if (imageUrl) {
+            onChange(imageUrl);
+            setImageUrl("");
+            setIsDialogOpen(false);
+        }
+    }
+    return (
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
+                        <ImageIcon className="size-4" />
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem className="flex items-center" onClick={onUpload}>
+                        <UploadIcon className="size-4 mr-2" />
+                        Upload
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="flex items-center" onClick={() => setIsDialogOpen(true)}>
+                        <SearchIcon className="size-4 mr-2" />
+                        Past image url
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Paste image url</DialogTitle>
+                    </DialogHeader>
+                    <Input placeholder="Paste image url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleImageUrlSubmit();
+                        }
+                    }} />
+                    <DialogFooter>
+                        <Button onClick={handleImageUrlSubmit}>Apply</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
+}
+const LinkButton = () => {
+    const { editor } = useEditorStore();
+
+    const [value, setValue] = useState(editor?.getAttributes("link").href || "");
+
+    const onChange = (href: string) => {
+        editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();
+        setValue("");
+    }
+    return (
+        <DropdownMenu onOpenChange={(open) => {
+            if (open) {
+                setValue(editor?.getAttributes("link").href || "");
+            }
+        }}>
+            <DropdownMenuTrigger asChild>
+                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
+                    <LinkIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-2 flex items-center gap-x-2">
+                <Input placeholder="www.example.com" type="url" value={value} onChange={(e) => setValue(e.target.value)} />
+                <Button onClick={() => onChange(value)}>Apply</Button>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
 const HeadingLevelButton = () => {
     const { editor } = useEditorStore();
     const heading = [
@@ -62,7 +173,7 @@ const HeadingLevelButton = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button className="h-7 min-w-7 justify-center shrink-0 flex items-center rounded-sm hover:bg-neutral-200/80 bg-neutral-200 text-black px-1 overflow-hidden text-sm">
+                <Button className="h-7 min-w-7 justify-center shrink-0 flex items-center rounded-sm hover:bg-neutral-200/80 bg-transparent text-black px-1 overflow-hidden text-sm">
                     <span className="">{getCurrentHeadingLevel()}</span>
                     <ChevronDownIcon className="size-4 ml-2 shrink-0" />
                 </Button>
@@ -83,7 +194,7 @@ const HeadingLevelButton = () => {
                             (value === 0 && !editor?.isActive("heading")) || editor?.isActive("heading", { level: value }) && "bg-neutral-200/80"
                         )}>
                         {label}
-                   </button>
+                    </button>
                 ))}
             </DropdownMenuContent>
         </DropdownMenu>
@@ -98,8 +209,8 @@ const HighlightColorButton = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80 bg-neutral-200 text-black px-1 overflow-hidden text-sm">
-                  <HighlighterIcon className="size-4" />
+                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
+                    <HighlighterIcon className="size-4" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-2">
@@ -117,9 +228,9 @@ const TextColorButton = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80 bg-neutral-200 text-black px-1 overflow-hidden text-sm">
+                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
                     <span className="text-xs">A</span>
-                    <div className="h-0.5 w-full " style={{backgroundColor: value}}></div>
+                    <div className="h-0.5 w-full " style={{ backgroundColor: value }}></div>
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-2">
@@ -128,13 +239,6 @@ const TextColorButton = () => {
         </DropdownMenu>
     )
 }
-
-interface ToolbarButtonProps {
-    onClick?: () => void;
-    isActive?: boolean;
-    icon: LucideIcon;
-}
-
 const ToolbarButton = ({
     onClick,
     isActive,
@@ -207,7 +311,7 @@ export default function Toolbar() {
                     onClick: () => editor?.chain().focus().toggleStrike().run(),
                     isActive: editor?.isActive("strike"),
                 },
-                
+
             ],
             [
                 {
@@ -252,6 +356,7 @@ export default function Toolbar() {
             }
             < TextColorButton />
             < HighlightColorButton />
+
             <Separator orientation="vertical" className="h-6 bg-neutral-300" />
             {
                 sections[2].map((item) => (
@@ -259,7 +364,10 @@ export default function Toolbar() {
                 ))
             }
             <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-         
+            <ImageButton />
+            <LinkButton />
+            <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+
         </div>
     )
 }

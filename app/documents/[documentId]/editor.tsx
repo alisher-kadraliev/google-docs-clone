@@ -16,6 +16,7 @@ import Highlight from '@tiptap/extension-highlight';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from "@/store/use-editor-store";
 import Heading from '@tiptap/extension-heading';
+import Link from '@tiptap/extension-link';
 import { TextStyle } from '@tiptap/extension-text-style';
 export const Editor = () => {
 
@@ -71,6 +72,7 @@ export const Editor = () => {
         multicolor: true,
       }),
       TextStyle,
+      Link,
     ],
     content: `
         <table>
