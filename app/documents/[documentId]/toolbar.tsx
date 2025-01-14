@@ -2,7 +2,7 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/store/use-editor-store";
-import { BoldIcon, ChevronDownIcon, HighlighterIcon, ImageIcon, ItalicIcon, LinkIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, StrikethroughIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
+import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, ChevronDownIcon, HighlighterIcon, ImageIcon, ItalicIcon, LinkIcon, ListIcon, ListOrderedIcon, ListTodoIcon, LucideIcon, MessageSquarePlusIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, SearchIcon, SpellCheckIcon, StrikethroughIcon, UnderlineIcon, Undo2Icon, UploadIcon } from "lucide-react";
 import { type ColorResult, SketchPicker } from "react-color";
 import {
     DropdownMenu,
@@ -23,6 +23,79 @@ interface ToolbarButtonProps {
     onClick?: () => void;
     isActive?: boolean;
     icon: LucideIcon;
+}
+
+const ListButton = () => {
+    const { editor } = useEditorStore();
+    const listsItem = [
+        {
+            label: "Bullet List",
+            icon: ListIcon,
+            isActive: editor?.isActive("bulletList"),
+            onClick: () => editor?.chain().focus().toggleBulletList().run(),
+        },
+        {
+            label: "Ordered List",
+            icon: ListOrderedIcon,
+            isActive: editor?.isActive("orderedList"),
+            onClick: () => editor?.chain().focus().toggleOrderedList().run(),
+        },
+    ]
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
+                    <ListIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+                {listsItem.map(({ label, icon: Icon, isActive, onClick }) => (
+                    <button key={label} className={cn("flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200", isActive && "bg-neutral-200/80")} onClick={onClick}>
+                        <Icon className="size-4 mr-2" />
+                        {label}
+                    </button>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
+const AlignButton = () => {
+    const { editor } = useEditorStore();
+    const aligns = [
+        {
+            label: "Left",
+            value: "left",
+            icon: AlignLeftIcon,
+        },
+        {
+            label: "Center",
+            value: "center",
+            icon: AlignCenterIcon,
+        },
+        {
+            label: "Right",
+            value: "right",
+            icon: AlignRightIcon,
+        },
+    ]
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button className="h-7 min-w-7 justify-center shrink-0 flex flex-col items-center rounded-sm hover:bg-neutral-200/80  text-black px-1 overflow-hidden text-sm">
+                    <AlignLeftIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+                {aligns.map(({ label, value, icon: Icon }) => (
+                    <button key={value} className={cn("flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200", editor?.isActive("textAlign", { textAlign: value }) && "bg-neutral-200/80")} onClick={() => editor?.chain().focus().setTextAlign(value).run()}>
+                        <Icon className="size-4 mr-2" />
+                        {label}
+                    </button>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
 }
 
 const ImageButton = () => {
@@ -367,7 +440,9 @@ export default function Toolbar() {
             <ImageButton />
             <LinkButton />
             <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-
+            <AlignButton />
+            <ListButton />
+            <Separator orientation="vertical" className="h-6 bg-neutral-300" />
         </div>
     )
 }

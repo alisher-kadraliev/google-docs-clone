@@ -13,17 +13,20 @@ import Strikethrough from '@tiptap/extension-strike';
 import Image from '@tiptap/extension-image';
 import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
+import Align from '@tiptap/extension-text-align';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from "@/store/use-editor-store";
 import Heading from '@tiptap/extension-heading';
 import Link from '@tiptap/extension-link';
 import { TextStyle } from '@tiptap/extension-text-style';
+import Ruler from './ruler';
 export const Editor = () => {
 
 
   const { setEditor } = useEditorStore();
   const editor = useEditor({
-    onCreate({editor}) {
+    immediatelyRender: false,
+    onCreate({ editor }) {
       setEditor(editor)
     },
     onDestroy() {
@@ -73,6 +76,9 @@ export const Editor = () => {
       }),
       TextStyle,
       Link,
+      Align.configure({
+        types: ["heading", "paragraph"],
+      }),
     ],
     content: `
         <table>
@@ -94,8 +100,9 @@ export const Editor = () => {
 
   return (
     <div className="size-full overflow-x-auto bg-[#fafbfd] px-4 print:p-0 print:bg-white print:overflow-visible">
+      <Ruler />
       <div className='min-w-max flex justify-center items-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0'>
-      <EditorContent editor={editor} />
+        <EditorContent editor={editor} />
       </div>
     </div>
   );
