@@ -9,7 +9,7 @@ export default function Navbar() {
                     <Image src="/logo.svg" alt="Logo" width={36} height={36} />
                 </Link>
                 <div className="flex flex-col">
-                    
+                      
                 </div>
             </div>
         </nav>
