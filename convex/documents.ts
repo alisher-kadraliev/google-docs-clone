@@ -26,3 +26,44 @@ export const get = query({
         return await ctx.db.query("documents").paginate(args.paginationOpts);
     },
 });
+
+export const removeById = mutation({
+    args: { id: v.id("documents") },
+    handler: async (ctx, args) => {
+        const user = await ctx.auth.getUserIdentity();
+        if (!user) {
+            throw new Error("Unauthorized");
+        }
+        const document = await ctx.db.get(args.id);
+        if (!document) {
+            throw new Error("Document not found");
+        }
+        const isOwner = document.ownerId === user.subject;
+
+        if (!isOwner) {
+            throw new Error("Unauthorized");
+        }
+        return await ctx.db.delete(args.id);
+    }
+})
+
+export const updateById = mutation({
+    args: { id: v.id("documents"), title: v.string() },
+    handler: async (ctx, args) => {
+        const user = await ctx.auth.getUserIdentity();
+        if (!user) {
+            throw new Error("Unauthorized");
+        }
+        const document = await ctx.db.get(args.id);
+        if (!document) {
+            throw new Error("Document not found");
+        }
+        const isOwner = document.ownerId === user.subject;
+
+        if (!isOwner) {
+            throw new Error("Unauthorized");
+        }
+        return await ctx.db.patch(args.id,{title:args.title});
+    }
+})
+
