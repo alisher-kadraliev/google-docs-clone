@@ -1,5 +1,6 @@
 import { Editor } from "./editor";
 import Navbar from "./navbar";
+import { Room } from "./room";
 import Toolbar from "./toolbar";
 
 type DocumentPageProps = {
@@ -9,7 +10,6 @@ type DocumentPageProps = {
 const DocumentPage = async ({ params }: DocumentPageProps) => {
   const { documentId } = await params;
 
-
   return (
     <div className="min-h-screen bg-[#fafbfd]">
       <div className="hidden">{documentId}</div>
@@ -18,7 +18,9 @@ const DocumentPage = async ({ params }: DocumentPageProps) => {
         <Toolbar />
       </div>
       <div className="pt-[116px] print:pt-0">
-        <Editor />
+        <Room>
+          <Editor />
+        </Room>
       </div>
     </div>
   );

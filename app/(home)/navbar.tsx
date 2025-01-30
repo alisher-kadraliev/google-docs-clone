@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SearchInput from './search-input'
-import {UserButton} from "@clerk/nextjs"
+import {UserButton,OrganizationSwitcher} from "@clerk/nextjs"
 const Navbar = () => {
     return (
         <nav className='flex justify-between items-center h-full w-full'>
@@ -13,7 +13,15 @@ const Navbar = () => {
                 <h3 className='text-lg font-medium'>Dock</h3>
             </div>
             <SearchInput />
+            <div className='flex items-center gap-2'>
+                <OrganizationSwitcher
+                    afterCreateOrganizationUrl="/"
+                    afterLeaveOrganizationUrl="/"
+                    afterSelectOrganizationUrl="/"
+                    afterSelectPersonalUrl="/"
+                />
             <UserButton />
+            </div>
         </nav>
     )
 }
