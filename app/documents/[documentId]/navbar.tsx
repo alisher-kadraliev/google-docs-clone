@@ -18,9 +18,13 @@ import {
 import { BoldIcon, FileIcon, FileJson, FilePenIcon, FilePlus, FileTextIcon, GlobeIcon, ItalicIcon, PrinterIcon, RedoIcon, RemoveFormattingIcon, StrikethroughIcon, TableIcon, TextIcon, TrashIcon, UnderlineIcon, UndoIcon } from "lucide-react";
 import { BsFilePdf } from "react-icons/bs";
 import { useEditorStore } from "@/store/use-editor-store";
-
+import { UserButton, OrganizationSwitcher } from "@clerk/nextjs"
+import React from "react";
+import { Inbox } from "./inbox";
 
 export default function Navbar() {
+
+
     const { editor } = useEditorStore()
     const insertTable = (rows: number, cols: number) => {
         editor?.chain().focus().insertTable({ rows, cols, withHeaderRow: false }).run()
@@ -181,6 +185,16 @@ export default function Navbar() {
                         </Menubar>
                     </div>
                 </div>
+            </div>
+            <div className='flex items-center justify-end gap-2'>
+              
+                <OrganizationSwitcher
+                    afterCreateOrganizationUrl="/"
+                    afterLeaveOrganizationUrl="/"
+                    afterSelectOrganizationUrl="/"
+                    afterSelectPersonalUrl="/"
+                />
+            <UserButton />
             </div>
         </nav>
     );

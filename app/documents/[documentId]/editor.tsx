@@ -22,10 +22,16 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import Ruler from './ruler';
 import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { Threads } from './threads';
-
+import { useOthers, useSelf } from '@liveblocks/react';
+import { Inbox } from './inbox';
+import { useStorage } from '@liveblocks/react';
 
 export const Editor = () => {
 
+  const leftMargin = useStorage((root) => root.leftMargin)
+  const rightMargin = useStorage((root) => root.rightMargin)
+  const users = useOthers()
+  const currentUser = useSelf()
   const liveblocks = useLiveblocksExtension();
 
   const { setEditor } = useEditorStore();
@@ -58,7 +64,7 @@ export const Editor = () => {
 
     editorProps: {
       attributes: {
-        style: "padding-left:56px;padding-right:56px;",
+        style: `padding-left:${leftMargin ?? 56}px;padding-right:${rightMargin ?? 56}px;`,
         class: 'focus:outline-none print:border-0 bg-white border-[#c7c7c7] border flex flex-col min-h-[1054px] w-[816px] mx-auto cursor-text pb-10 pr-14 pt-10',
       },
     },
@@ -94,6 +100,19 @@ export const Editor = () => {
     <div className="size-full overflow-x-auto bg-[#fafbfd] px-4 print:p-0 print:bg-white print:overflow-visible">
       <Ruler />
       <div className='min-w-max flex justify-center items-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0'>
+        <div className="flex items-center gap-2 fixed bottom-2 right-10">
+          <Inbox />
+        {currentUser && (
+          <div>
+            <img src={currentUser.info.avatar} alt={currentUser.info.name} width={30} height={30} className="rounded-full" />
+          </div>
+        )}
+        {users.map(({connectionId, info}) => (
+          <div key={connectionId}>
+            <img src={info.avatar} alt={info.name} width={30} height={30} className="rounded-full" />
+          </div>
+        ))}
+        </div>
         <EditorContent editor={editor} />
         <Threads editor={editor} />
       </div>
