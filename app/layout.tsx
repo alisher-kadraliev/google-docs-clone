@@ -5,6 +5,7 @@ import "@liveblocks/react-tiptap/styles.css";
 import "./globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { ConvexClientProvider } from "@/components/convex-client-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,7 @@ export default function RootLayout({
             {children}
           </ConvexClientProvider>
         </NuqsAdapter>
-      
+        <Toaster />
       </body>
     </html>
   );

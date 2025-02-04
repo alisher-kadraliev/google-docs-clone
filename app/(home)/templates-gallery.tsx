@@ -38,7 +38,7 @@ const TemplatesGallery = () => {
             {templates.map((template: any) => (
               <CarouselItem key={template.id} className='basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6 pl-4'>
                 <div className={cn("aspect-[3/4] flex flex-col gap-y-2.5", isCreating && "pointer-events-none opacity-50")}>
-                  <button disabled={isCreating} onClick={() => { onTemplateClick(template.title, "") }} style={{ backgroundImage: `url(${template.logo})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} className='size-full hover:border-blue-500 rounded-lg border hover:bg-blue-50 transition-all duration-300 flex flex-col items-center justify-center gap-y-4 bg-white '>
+                  <button disabled={isCreating} onClick={() => { onTemplateClick(template.title, template.initialContent) }} style={{ backgroundImage: `url(${template.logo})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} className='size-full hover:border-blue-500 rounded-lg border hover:bg-blue-50 transition-all duration-300 flex flex-col items-center justify-center gap-y-4 bg-white '>
                   </button>
                   <p className='text-sm font-medium truncate'>{template.title}</p>
                 </div>

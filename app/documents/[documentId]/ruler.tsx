@@ -1,6 +1,6 @@
 'use client'
 import React, { useRef, useState } from 'react'
-import { FaCaretDown, FaCaretLeft } from 'react-icons/fa'
+import { FaCaretDown } from 'react-icons/fa'
 import { useStorage, useMutation } from '@liveblocks/react';
 
 const markers = Array.from({ length: 83 }, (_, i) => i);

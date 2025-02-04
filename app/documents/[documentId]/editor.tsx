@@ -26,13 +26,21 @@ import { useOthers, useSelf } from '@liveblocks/react';
 import { Inbox } from './inbox';
 import { useStorage } from '@liveblocks/react';
 
-export const Editor = () => {
+
+interface EditorProps {
+  initialContent?: string | undefined
+}
+
+export const Editor = ({ initialContent }: EditorProps) => {
 
   const leftMargin = useStorage((root) => root.leftMargin)
   const rightMargin = useStorage((root) => root.rightMargin)
   const users = useOthers()
   const currentUser = useSelf()
-  const liveblocks = useLiveblocksExtension();
+  const liveblocks = useLiveblocksExtension({
+    initialContent: initialContent ?? "",
+    offlineSupport_experimental: true,
+  });
 
   const { setEditor } = useEditorStore();
   const editor = useEditor({
