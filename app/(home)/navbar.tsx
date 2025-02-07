@@ -1,8 +1,7 @@
-import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SearchInput from './search-input'
-import {UserButton,OrganizationSwitcher} from "@clerk/nextjs"
+import { UserButton, OrganizationSwitcher } from "@clerk/nextjs"
 const Navbar = () => {
     return (
         <nav className='flex justify-between items-center h-full w-full'>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useRef, useState } from 'react'
 import { Id } from '@/convex/_generated/dataModel'
