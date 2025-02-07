@@ -15,7 +15,7 @@ import Image from '@tiptap/extension-image';
 import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Align from '@tiptap/extension-text-align';
-import ImageResize from 'tiptap-extension-resize-image';
+/* import ImageResize from 'tiptap-extension-resize-image';*/
 import { useEditorStore } from "@/store/use-editor-store";
 import Heading from '@tiptap/extension-heading';
 import Link from '@tiptap/extension-link';
@@ -90,7 +90,6 @@ export const Editor = ({ initialContent }: EditorProps) => {
       TableRow,
       Underline,
       Image,
-      ImageResize,
       Strikethrough,
       Heading,
       Color,
